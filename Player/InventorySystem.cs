@@ -47,4 +47,11 @@ public class InventorySystem : MonoBehaviour
     {
         CurrentWeapon.GetComponent<Gun>().Reload();
     }
+    public void Zoom(float Input)
+    {
+        if(CurrentWeapon.GetComponent<Gun>().HasScope)
+        {
+            CurrentWeapon.GetComponent<Gun>().Zoom(Input);
+        }
+    }
 }
