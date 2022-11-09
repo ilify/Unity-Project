@@ -21,6 +21,7 @@ public class InputManagerInventory : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        inventorySystem.Zoom(Actions.Zoom.ReadValue<float>());
         inventorySystem.ADS(Actions.ADS.ReadValue<float>());
         inventorySystem.Shoot(Actions.Shoot.ReadValue<float>());
     }
