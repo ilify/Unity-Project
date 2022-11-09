@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
     }
     private void Update()
     {
-        if(GetComponent<Rigidbody>().velocity != Vector3.zero) GetComponent<Rigidbody>().velocity += transform.up * -9.8f * Time.deltaTime;
+        if(GetComponent<Rigidbody>().velocity != Vector3.zero) GetComponent<Rigidbody>().velocity += transform.up * -9.8f * 2f * Time.deltaTime;
     }
     // Update is called once per frame
     private void OnCollisionEnter(Collision collision)
