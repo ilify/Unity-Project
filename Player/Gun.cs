@@ -36,6 +36,8 @@ public class Gun : MonoBehaviour
 
     [Header("Scope (Leave Empty if no scope)")]
     public GameObject Scope;
+    public float MaxZoom;
+    public float MinZoom;
 
     //RunTime Variables
     private float nextFire = 0.0f;
@@ -44,6 +46,10 @@ public class Gun : MonoBehaviour
     private bool is_ADS;
     private float sens;
     private float next = 0;
+    private float ZoomAmount = 1;
+
+
+
     public void Start()
     {
         sens = GameObject.Find("Player").GetComponent<PlayerLook>().Sensitivity;
@@ -106,7 +112,7 @@ public class Gun : MonoBehaviour
             {
                 Scope.transform.GetChild(1).gameObject.SetActive(true);
                 Scope.transform.GetChild(0).gameObject.SetActive(false);
-                GameObject.Find("Player").GetComponent<PlayerLook>().Sensitivity = sens * scopeSensMultiplier;
+                GameObject.Find("Player").GetComponent<PlayerLook>().Sensitivity = sens * scopeSensMultiplier * (1/ZoomAmount);
             }
             transform.parent.localPosition = Vector3.Lerp(transform.parent.localPosition,ADSpostions, 15 * Time.deltaTime);
             transform.parent.localRotation = ADSRot;
@@ -158,6 +164,23 @@ public class Gun : MonoBehaviour
             if(!is_ADS) Recoil(1f);
             else Recoil(0.08f);
         }
+    }
+    public void Zoom(float Input)
+    {
+        if (Input == 0f) Scope.transform.GetChild(1).GetChild(2).GetComponent<Camera>().fieldOfView = 60 / ZoomAmount;
+        else
+        {
+            if(Input > 0)
+            {
+                ZoomAmount ++; 
+            }
+            else
+            {
+                ZoomAmount --;
+            }
+            ZoomAmount = Mathf.Clamp(ZoomAmount, MinZoom, MaxZoom);
+        }
+
     }
     private void Recoil(float x)
     {
