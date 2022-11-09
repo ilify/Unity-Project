@@ -7,7 +7,7 @@
  3-Change Script Values<br>
  ## *** Inportant ***<br>
  RangeBP > 0.6f<br>
- Set hipPosiont and AdsPosition Properly<br>
+ Set hipPosition and AdsPosition Properly<br>
  Types{Shotgun and Melee} still don't work<br>
  Has Scope is necessary for Weapon with A Scope<br>
  Gun Shot Sound is necessary<br>
