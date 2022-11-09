@@ -14,9 +14,6 @@ public class Bullet : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         GetComponent<Rigidbody>().velocity = Vector3.zero;
-        //ERROR::GetComponent<Rigidbody>().
-
         GetComponent<BoxCollider>().enabled = false;
-        Destroy(gameObject,5f);//Destroy after 1sc
     }
 }
