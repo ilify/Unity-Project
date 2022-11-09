@@ -157,7 +157,7 @@ public class Gun : MonoBehaviour
             else
             {
                 var bullet = Instantiate(Bullet, transform.parent.parent.position + transform.parent.parent.forward * RangeBP, transform.parent.parent.parent.rotation);
-                bullet.GetComponent<Rigidbody>().velocity = transform.parent.parent.forward * 250.0f;
+                bullet.GetComponent<Rigidbody>().velocity = transform.parent.parent.forward * 250.0f + transform.parent.parent.up * -9.8f;
             }
             if(FireRate < 0.2f) { CameraShaker.Instance.ShakeOnce(2f, 2f, 0f, 0.5f); }
             else { CameraShaker.Instance.ShakeOnce(FireRate * 10f, 2f, 0f, 0.5f); }
