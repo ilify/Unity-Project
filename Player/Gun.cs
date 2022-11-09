@@ -7,33 +7,43 @@ using UnityEngine.InputSystem;
 
 public class Gun : MonoBehaviour
 {
-    public GameObject Bullet;
-    public enum Type {
+    public enum Type
+    {
         AR,
         Shotgun,
-        Melee};
-    public bool toggleADS = false;
+        Melee
+    };
+    [Header("Proprities")]
     [SerializeField] Type type = new Type();
+    public AudioClip gunshotSound;
     public bool HasScope;
+    public GameObject Bullet;
+    public float scopeSensMultiplier;
+
+    [Header("Stats")]
     public int Damage;
     public float FireRate;
     public float Range;
     public float RangeBP;
     public int Ammo;
+
+    [Header("Misc")]
+    public bool toggleADS = false;
     public Vector3 ADSpostions;
     public Vector3 Hippostions;
     public Quaternion ADSRot;
     public Quaternion HipRot;
-    public AudioClip gunshotSound;
+
+    [Header("Scope (Leave Empty if no scope)")]
     public GameObject Scope;
-    public float scopeSensMultiplier;
+
     //RunTime Variables
-    [Header("RunTime")]
     private float nextFire = 0.0f;
-    public int CurrentAmmo;
+    private int CurrentAmmo;
     private PlayerLook PlayerLook;
-    public bool is_ADS;
-    float sens;
+    private bool is_ADS;
+    private float sens;
+    private float next = 0;
     public void Start()
     {
         sens = GameObject.Find("Player").GetComponent<PlayerLook>().Sensitivity;
@@ -61,8 +71,7 @@ public class Gun : MonoBehaviour
     {
         GameObject.Find("Player").transform.GetChild(2).gameObject.SetActive(state);
     }
-    //ADS
-    float next = 0;
+    
     public void toggleAds(float Input)
     {
         if (!toggleADS) { is_ADS = Input > 0; UI(!is_ADS); return; }
