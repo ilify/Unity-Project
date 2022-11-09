@@ -18,3 +18,6 @@
  2-Add The scope prefab to the prefab <br>
  3-Make a refrence to the scope prefab in the gun script of the Weapon (Drag and Drop)<br>
  
+# How do u Add it to the project:
+1-Make a new folder in your project <br>
+2-Extract all files in there<br>
