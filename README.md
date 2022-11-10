@@ -12,6 +12,7 @@
  Has Scope is necessary for Weapon with A Scope<br>
  Gun Shot Sound is necessary<br>
  scopeSensMultiplier > 0 "Else U cant move the camera"<br>
+ Accurency > 0 The More The Better
  
  # How do u Add a scope to the Weapon :
  1-Open The prefab <br>
