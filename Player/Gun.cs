@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class Gun : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class Gun : MonoBehaviour
     public float Range;
     public float RangeBP;
     public int Ammo;
+    public float Accurency; // The More The Better
 
     [Header("Misc")]
     public bool toggleADS = false;
@@ -46,12 +48,13 @@ public class Gun : MonoBehaviour
     private bool is_ADS;
     private float sens;
     private float next = 0;
-    private float ZoomAmount = 1;
+    private float ZoomAmount;
 
 
 
     public void Start()
     {
+        ZoomAmount = MinZoom;
         sens = GameObject.Find("Player").GetComponent<PlayerLook>().Sensitivity;
         is_ADS = false;
         FireRate = 1/FireRate;
@@ -148,21 +151,23 @@ public class Gun : MonoBehaviour
         
         if (CurrentAmmo > 0)
         {
+            Vector3 BulletDir = new Vector3(Random.Range(-(1 / Accurency) * Mathf.Sqrt(2), (1 / Accurency) * Mathf.Sqrt(2)),
+                                            Random.Range(-(1 / Accurency) * Mathf.Sqrt(2), (1 / Accurency) * Mathf.Sqrt(2)),1f);
             CurrentAmmo--;
             AudioSource.PlayClipAtPoint(gunshotSound, transform.position);
-            if (Physics.Raycast(transform.parent.parent.position, transform.parent.parent.TransformDirection(Vector3.forward), out RaycastHit hitInfo, RangeBP))
+            if (Physics.Raycast(transform.parent.parent.position, BulletDir, out RaycastHit hitInfo, RangeBP))
             {
                 var bullet = Instantiate(Bullet, hitInfo.point , transform.parent.rotation);
             }
             else
             {
-                var bullet = Instantiate(Bullet, transform.parent.parent.position + transform.parent.parent.forward * RangeBP, transform.parent.parent.parent.rotation);
+                var bullet = Instantiate(Bullet, transform.parent.parent.position + BulletDir * RangeBP, transform.parent.parent.parent.rotation);
                 bullet.GetComponent<Rigidbody>().velocity = transform.parent.parent.forward * 250.0f;
             }
             if(FireRate < 0.2f) { CameraShaker.Instance.ShakeOnce(2f, 2f, 0f, 0.5f); }
             else { CameraShaker.Instance.ShakeOnce(FireRate * 10f, 2f, 0f, 0.5f); }
             if(!is_ADS) Recoil(1f);
-            else Recoil(0.08f);
+            else Recoil(FireRate * 0.5f);
         }
     }
     public void Zoom(float Input)
@@ -172,7 +177,7 @@ public class Gun : MonoBehaviour
         {
             if(Input > 0)
             {
-                ZoomAmount ++; 
+                ZoomAmount++;
             }
             else
             {
