@@ -28,6 +28,7 @@ public class Gun : MonoBehaviour
     public float RangeBP;
     public int Ammo;
     public float Accurency; // The More The Better
+    public float NumberPallet;
 
     [Header("Misc")]
     public bool toggleADS = false;
@@ -134,7 +135,11 @@ public class Gun : MonoBehaviour
                 }
                 break;
             case Type.Shotgun:
-                ShootSH(Input);
+                if (Time.time > nextFire)
+                {
+                    nextFire = Time.time + FireRate;
+                    ShootSH(Input);
+                }
                 break;
             case Type.Melee:
                 ShootME(Input);
@@ -151,8 +156,15 @@ public class Gun : MonoBehaviour
         
         if (CurrentAmmo > 0)
         {
-            Vector3 BulletDir = new Vector3(Random.Range(-(1 / Accurency) * Mathf.Sqrt(2), (1 / Accurency) * Mathf.Sqrt(2)),
-                                            Random.Range(-(1 / Accurency) * Mathf.Sqrt(2), (1 / Accurency) * Mathf.Sqrt(2)),1f);
+            float temp = 0f;
+            if (HasScope && is_ADS) { temp = Accurency; Accurency = 10000; } // Perfect Shot
+            if (!HasScope && is_ADS) Accurency *= 2;
+            Vector2 Spread = new Vector2(Random.Range(-(1 / Accurency), (1 / Accurency)),
+                                         Random.Range(-(1 / Accurency), (1 / Accurency)));
+            Spread = Vector2.ClampMagnitude(Spread, 1f);//Make the Spread a Circle
+            Vector3 BulletDir = transform.parent.parent.TransformDirection(Vector3.forward) + transform.parent.parent.TransformDirection(Vector3.left) * Spread.x + transform.parent.parent.TransformDirection(Vector3.up) * Spread.y;
+            if (HasScope && is_ADS) { Accurency = temp; }
+            if (!HasScope && is_ADS) Accurency /= 2;
             CurrentAmmo--;
             AudioSource.PlayClipAtPoint(gunshotSound, transform.position);
             if (Physics.Raycast(transform.parent.parent.position, BulletDir, out RaycastHit hitInfo, RangeBP))
@@ -167,7 +179,8 @@ public class Gun : MonoBehaviour
             if(FireRate < 0.2f) { CameraShaker.Instance.ShakeOnce(2f, 2f, 0f, 0.5f); }
             else { CameraShaker.Instance.ShakeOnce(FireRate * 10f, 2f, 0f, 0.5f); }
             if(!is_ADS) Recoil(1f);
-            else Recoil(FireRate * 0.5f);
+            else Recoil(FireRate * 0.2f);
+
         }
     }
     public void Zoom(float Input)
@@ -189,7 +202,7 @@ public class Gun : MonoBehaviour
     }
     private void Recoil(float x)
     {
-        //transform.localRotation = Quaternion.Euler(-10f, 0f, 0f);
+        //transform.parent.localRotation = Quaternion.Euler(-3f, 0f, 0f);
         transform.localPosition += new Vector3(0, 0, -x);
     }
     private void ResetRecoil()
@@ -199,14 +212,26 @@ public class Gun : MonoBehaviour
     }
     public void ShootSH(float Input)
     {
+        if (Input == 0) return;
+
         if (CurrentAmmo > 0)
         {
             CurrentAmmo--;
-            print("SH shoots");
-            print("SH shoots");
-            print("SH shoots");
-            print("SH shoots");
-            print("SH shoots");
+            AudioSource.PlayClipAtPoint(gunshotSound, transform.position);
+            for (int i = 0; i < NumberPallet; i++)
+            {
+                CurrentAmmo--;
+                Quaternion Spread = Quaternion.Euler(Random.Range(-(1 / Accurency), (1 / Accurency)),
+                                                     Random.Range(-(1 / Accurency), (1 / Accurency)), 1f);
+                var bullet = Instantiate(Bullet, transform.parent.parent.position + transform.parent.parent.TransformDirection(Vector3.forward) * 1f, transform.parent.parent.parent.rotation * Spread);
+                bullet.GetComponent<Rigidbody>().velocity = transform.parent.parent.forward * 250.0f;
+            }
+
+            if (FireRate < 0.2f) { CameraShaker.Instance.ShakeOnce(2f, 2f, 0f, 0.5f); }
+            else { CameraShaker.Instance.ShakeOnce(FireRate * 10f, 2f, 0f, 0.5f); }
+            if (!is_ADS) Recoil(1f);
+            else Recoil(FireRate * 0.2f);
+
         }
     }
     public void ShootME(float Input)
